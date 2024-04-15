@@ -29,6 +29,7 @@ from numpy import (sin, cos, tan, log, log10, pi, average,
 from numpy.random import random, randint, normal, shuffle, choice as randchoice
 import os  # handy system and path functions
 import sys  # to get file system encoding
+import math
 
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
@@ -2144,7 +2145,12 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             curr_colours = all_colour_lists[exp_block_counter]
         
             # compute RTs using participant's average reading speed / letter
-            curr_durations = [len(word) * RT_per_letter_baseline for word in curr_text]  # in ms
+            minimum_duration = 6 * RT_per_letter_baseline
+            curr_durations = []
+            for word in curr_text:
+                duration = RT_per_letter_baseline * math.log((len(word))) + 300
+                curr_durations.append(max(duration, minimum_duration))
+
             # print(f"\tdurations for paced task training block: {curr_durations_training}")
         
             # we also need the start time (let's set it as current time
@@ -2194,8 +2200,12 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 curr_text_nr = all_texts_nrs_list[exp_block_counter]
                 curr_text = locals()[curr_text_nr]
                 # compute RTs using participant's average reading speed / letter
-                curr_durations = [len(word) * RT_per_letter_baseline for word in curr_text]  # in ms
-        
+                minimum_duration = 6 * RT_per_letter_baseline
+                curr_durations = []
+                for word in curr_text:
+                    duration = RT_per_letter_baseline * math.log((len(word))) + 300
+                    curr_durations.append(max(duration, minimum_duration))
+
                 ### change background colour
                 win.setColor(dark_bg_col, colorSpace='rgb')
                 win.flip()
@@ -2235,12 +2245,21 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 # get text nr:
                 curr_text_nr = all_texts_nrs_list[exp_block_counter]
                 curr_text = locals()[curr_text_nr]
-                # compute RTs using participant's average reading speed / letter
+                # compute RTs using participant's average reading speed / letter                
                 if curr_block == "1back_dual_main_no_click":
-                    curr_durations = [len(word) * RT_per_letter_1bck for word in curr_text]  # in ms
+                    minimum_duration = 6 * RT_per_letter_1bck
+                    curr_durations = []
+                    for word in curr_text:
+                        duration = RT_per_letter_1bck * math.log(len(word)) + 490
+                        curr_durations.append(max(duration, minimum_duration))
                 elif curr_block == "2back_dual_main_no_click":
-                    curr_durations = [len(word) * RT_per_letter_2bck for word in curr_text]  # in ms
-        
+                    minimum_duration = 6 * RT_per_letter_2bck
+                    curr_durations = []
+                    for word in curr_text:
+                        duration = RT_per_letter_2bck * math.log(len(word)) + 700
+                        curr_durations.append(max(duration, minimum_duration))
+
+
                 ### change background colour
                 win.setColor(dark_bg_col, colorSpace='rgb')
                 win.flip()
